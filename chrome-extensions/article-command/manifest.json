@@ -1,0 +1,15 @@
+{
+    "manifest_version": 2,
+    "name": "Article Command",
+    "version": "0.0.1",
+
+    "description": "Dynamically insert menu items for shortcut to open article editor.",
+
+    "author": "Krerkkiat Chusap",
+    "content_scripts": [{
+        "matches": ["http://writer.dek-d.com/*"],
+        "js": ["jquery-2.1.4.min.js", "ArticleCommandChromeExt.js"],
+        "run_at": "document_idle"
+    }],
+    "homepage_url": "http://writer.dek-d.com/krerkkiat/writer/viewlongc.php?id=1370664&chapter=14"
+}
