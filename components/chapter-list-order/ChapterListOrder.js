@@ -1,47 +1,34 @@
-var ChapterListOrder = function () {
-    this.months = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-    this.order = new Order();
+/* require CompareFunction */
 
-    this.isDefaultOrderReverse = false;
-    /*this.isNameOrderReverse = false;*/
-    this.isLastUpdatedOrderReverse = false;
+var ChapterListOrder = function () {
+    this.ASCENDING_ORDER = 0;
+    this.DESCENDING_ORDER = 1;
+
+    this.container = this.getContainer();
+
+    this.chapterIdState = this.ASCENDING_ORDER;
+    this.chapterUpdateDateState = this.ASCENDING_ORDER;
 
     this._alterColumnTitlePanel();
 };
 
 ChapterListOrder.prototype._alterColumnTitlePanel = function () {
     var that = this,
-        titlePanel = this.getContainer().find(".box03_22");
+        titlePanel = this.container.find(".box03_22");
     titlePanel.find("p").click(function (e) {
-        e.preventDefault();
-        if(e.currentTarget.textContent == "ตอน") {
-            that.isDefaultOrderReverse = !that.isDefaultOrderReverse;
-            that.defaultOrder();
-        } else if(e.currentTarget.textContent == "ชื่อตอน") {
-            /*this.isNameOrderReverse = !this.isNameOrderReverse*/
+            e.preventDefault();
+            if (e.currentTarget.textContent == "ตอน") {
+                that.chapterIdState = (that.chapterIdState == that.ASCENDING_ORDER)? that.DESCENDING_ORDER : that.ASCENDING_ORDER;
+                that.reorder(CompareFunction.compareChapterId, that.chapterIdState);
 
-        } else if(e.currentTarget.textContent == "อัพเดท") {
-            that.isLastUpdatedOrderReverse = !that.isLastUpdatedOrderReverse;
-            that.lastUpdatedOrder();
-        }
+                that.chapterUpdateDateState = that.ASCENDING_ORDER;
+            } else if (e.currentTarget.textContent == "อัพเดท") {
+                that.chapterUpdateDateState = (that.chapterUpdateDateState == that.ASCENDING_ORDER)? that.DESCENDING_ORDER : that.ASCENDING_ORDER;
+                that.reorder(CompareFunction.compareChapterUpdateDate, that.chapterUpdateDateState);
+
+                that.chapterIdState = that.DESCENDING_ORDER;
+            }
     });
-};
-
-ChapterListOrder.prototype.defaultOrder = function () {
-    if(this.isDefaultOrderReverse) {
-        this.changeOrder(this.order.reverse(this.order.default(this.getChapterList())));
-    } else {
-        this.changeOrder(this.order.default(this.getChapterList()));
-    }
-};
-
-
-ChapterListOrder.prototype.lastUpdatedOrder = function () {
-    if(this.isLastUpdatedOrderReverse) {
-        this.changeOrder(this.order.reverse(this.order.lastUpdated(this.getChapterList())));
-    } else {
-        this.changeOrder(this.order.lastUpdated(this.getChapterList()));
-    }
 };
 
 ChapterListOrder.prototype.getContainer = function () {
@@ -49,11 +36,20 @@ ChapterListOrder.prototype.getContainer = function () {
 };
 
 ChapterListOrder.prototype.getChapterList = function () {
-    return this.getContainer().find("li:not(.box03_22)").get();
+    return this.container.find("li:not(.box03_22)").get();
 };
 
-ChapterListOrder.prototype.changeOrder = function (list) {
-    var c = this.getContainer();
-    c.find("li:not(.box03_22)").detach();
-    $(list).insertBefore(c.find("div.clear"));
+ChapterListOrder.prototype.reorder = function (compareFunction, orderType) {
+    var list = this.getChapterList();
+
+    list.sort(compareFunction);
+
+    if(orderType === this.DESCENDING_ORDER) {
+        list = list.reverse();
+    }
+
+    this.container.find("li:not(.box03_22)").detach();
+    $(list).insertBefore(this.container.find("div.clear"));
 };
+
+var chapterListOrder = new ChapterListOrder();

@@ -14,7 +14,7 @@ var SearchBox = function () {
 
     // mark as unused
     this.target = $((document.getElementsByClassName("box03")[0] || document.querySelector("#storydiv > center > table:nth-child(n) > tbody > tr:nth-child(2) > td > table:nth-child(2)")).children[0]).parent();
-    this.target.first().css("height", this.target.first()[0].scrollHeight);
+    this.target.first().css("min-height", this.target.first()[0].scrollHeight);
     /*var list = t.find("li:not(.box03_22)").get();*/
     $(this.box).insertAfter($("h2.box02.box02_1.head2 p"));
 

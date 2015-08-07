@@ -1,3 +1,4 @@
+/* require User, Article */
 var ArticleCommand = function (user, article) {
     this.user = user;
     this.article = article;

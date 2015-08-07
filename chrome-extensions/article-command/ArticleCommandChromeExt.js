@@ -154,7 +154,10 @@ var checkState = function () {
         setTimeout(function () {
             var articleCommand = new ArticleCommand(new User(), new Article());
             articleCommand.attach();
-        }, 3000);
+        }, 7000);
+    } else if(document.readyState === "complete") {
+        var articleCommand = new ArticleCommand(new User(), new Article());
+        articleCommand.attach();
     } else {
         setTimeout(checkState, 3000);
     }
